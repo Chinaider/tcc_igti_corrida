@@ -24,9 +24,9 @@ const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
 
 const required = value => value ? undefined : 'Campo Obrigatorio.';
 const maxLength = max => value =>
-    value && value.length > max ? `Deve ter no máximo  ${max} caracteres ou menos.` : undefined;
+    value && value.length > max ? `Deve conter no máximo  ${max} caracteres ou menos.` : undefined;
 const minValue = min => value =>
-    value && value < min ? `Deve ser pelo menos ${min} caracteres.` : undefined;
+    value && value.length < min ? `Deve conter pelo menos ${min} caracteres.` : undefined;
 const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
         'E-mail inválido' : undefined;
@@ -47,8 +47,11 @@ class CadastroView extends Component {
             );
             return;
         }
-
-        //disparar cadastro....
+        this.props.cadastrar(
+            this.props.nome,
+            this.props.email,
+            this.props.senha
+        );
     }
 
     renderInput({input:{value,onChange,...restInput},label,type,autoCapitalize,icon,secureTextEntry, meta: { touched, error, warning } }){
@@ -73,6 +76,17 @@ class CadastroView extends Component {
        )
     }
 
+    renderError(){
+        if(this.props.error){
+            return (
+            <View style={style.content_error}>
+                <Text style={style.content_error_text}>{this.props.error}</Text>
+            </View>
+            );
+        }
+        return <Text/>;
+    }
+
     render(){
         return (
             <Container>
@@ -82,6 +96,7 @@ class CadastroView extends Component {
                     <View style={style.titleContent}>
                         <H1 style={style.title}>Registre-se</H1>
                     </View>
+                    {this.renderError()}
                         <View style={style.formContent}>
                             <Form>
                                 <KeyboardAwareScrollView>
@@ -92,7 +107,7 @@ class CadastroView extends Component {
                                         label="Nome"
                                         type="default"
                                         autoCapitalize={true}
-                                        validate={[required]}
+                                        validate={[required,minValue(3),maxLength(50)]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -102,7 +117,7 @@ class CadastroView extends Component {
                                         label="E-mail"
                                         type="email-address"
                                         autoCapitalize={false}
-                                        validate={[required,email]}
+                                        validate={[required,email,minValue(8),maxLength(50)]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -113,7 +128,7 @@ class CadastroView extends Component {
                                         type="default"
                                         autoCapitalize={false}
                                         secureTextEntry={true}
-                                        validate={[required]}
+                                        validate={[required,minValue(6),maxLength(25)]}
                                         style={{marginBottom: 5}}
                                     />
                                 </KeyboardAwareScrollView>
@@ -130,17 +145,21 @@ class CadastroView extends Component {
 
 const selector = formValueSelector('cadastro');
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        cadastrar: (nome,email,senha) => dispatch(actions.autenticacao.efetuarCadastro(nome,email,senha))
+    };
 }
 
 function mapStateToProps(state : States) {
     const email =  selector(state,'email');
     const nome = selector(state,'nome');
     const senha = selector(state,'senha');
+    const error = state.autenticacao.error;
     return {
         email,
         nome,
-        senha
+        senha,
+        error
     };
 }
 

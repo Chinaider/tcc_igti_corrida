@@ -3,8 +3,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 var {height, width} = Dimensions.get('window');
 var margin  = (height*10)/100;
 
-
-
 export default StyleSheet.create({
     container: {
         flex: 1,
@@ -75,4 +73,15 @@ export default StyleSheet.create({
     inputError:{
         color: "#f00"
     },
+    content_error:{
+        padding: 10,
+        backgroundColor: "#f00",
+        marginBottom: 10,
+        marginTop: 10
+    },
+    content_error_text:{
+        textAlign: 'center',
+        fontWeight: 'bold',
+        color: "#E1ECD6"
+    }
 });

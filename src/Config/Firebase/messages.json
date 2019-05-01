@@ -1,0 +1,6 @@
+{
+  "auth/email-already-in-use": "E-mail já cadastrado.",
+  "auth/invalid-email": "E-mail inválido.",
+  "auth/operation-not-allowed": "Operação não permitida, conta desativada.",
+  "auth/weak-password": "Senha fraca: A senha deve conter no minimo 6 caracteres."
+}

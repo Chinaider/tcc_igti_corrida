@@ -51,13 +51,3 @@ export default class App extends Component<Props> {
   }
 }
 
-function mapStateToProps(state) {
-
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        doLogin: (usuario,senha) => dispatch(actions)
-    }
-}
-
