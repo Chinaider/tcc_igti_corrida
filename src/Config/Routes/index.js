@@ -11,7 +11,7 @@ const AppNavigator = createStackNavigator(
     },
     {
         index: 0,
-        initialRouteName: "Cadastro",
+        initialRouteName: "Login",
         headerMode: "none"
     }
 );
