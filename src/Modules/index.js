@@ -1,15 +1,19 @@
 import { AutenticacaoState, autenticacao } from './Autenticacao';
+import { AppState, app } from './App';
 
 export type States = {
-    autenticacao:AutenticacaoState
+    autenticacao:AutenticacaoState,
+    app: AppState
 };
 
 export const reducers = {
-    autenticacao: autenticacao.reducer
+    autenticacao: autenticacao.reducer,
+    app: app.reducer
 };
 
 export const actions = {
-    autenticacao: autenticacao.actions
+    autenticacao: autenticacao.actions,
+    app: app.actions
 };
 
-export { autenticacao }
+export { autenticacao, app };

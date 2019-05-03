@@ -19,6 +19,7 @@ import {
     H1
 } from 'native-base';
 
+
 const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
 
 
@@ -107,7 +108,7 @@ class CadastroView extends Component {
                                         label="Nome"
                                         type="default"
                                         autoCapitalize={true}
-                                        validate={[required,minValue(3),maxLength(50)]}
+                                        validate={[required]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -117,7 +118,7 @@ class CadastroView extends Component {
                                         label="E-mail"
                                         type="email-address"
                                         autoCapitalize={false}
-                                        validate={[required,email,minValue(8),maxLength(50)]}
+                                        validate={[required,email]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -128,7 +129,7 @@ class CadastroView extends Component {
                                         type="default"
                                         autoCapitalize={false}
                                         secureTextEntry={true}
-                                        validate={[required,minValue(6),maxLength(25)]}
+                                        validate={[required]}
                                         style={{marginBottom: 5}}
                                     />
                                 </KeyboardAwareScrollView>
@@ -146,7 +147,7 @@ class CadastroView extends Component {
 const selector = formValueSelector('cadastro');
 function mapDispatchToProps(dispatch) {
     return {
-        cadastrar: (nome,email,senha) => dispatch(actions.autenticacao.efetuarCadastro(nome,email,senha))
+        cadastrar: (nome,email,senha) => dispatch(actions.autenticacao.efetuarCadastro(nome,email,senha)),
     };
 }
 
@@ -164,7 +165,7 @@ function mapStateToProps(state : States) {
 }
 
 CadastroView = connect(mapStateToProps,mapDispatchToProps)(CadastroView);
-
-export default  reduxForm({
+export default reduxForm({
     form: 'cadastro',
 })(CadastroView);
+

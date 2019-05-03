@@ -1,4 +1,4 @@
-import { handleActions } from 'redux-actions'
+import { handleActions } from 'redux-actions';
 import { LOGIN, CADASTRO_SUCESSO, ERROR } from './constants';
 
 export type AutenticacaoState = {

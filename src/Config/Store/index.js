@@ -1,6 +1,7 @@
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import ReduxThunk from 'redux-thunk';
 import autenticacao from './../../Modules/Autenticacao/reducer';
+import app from './../../Modules/App/reducer';
 import { reducer as formReducer } from 'redux-form';
 
 
@@ -8,7 +9,8 @@ export default function configureStore(onCompletion: () => void):any {
 
     const reducers = {
         form:formReducer,
-        autenticacao
+        autenticacao,
+        app
     };
 
     const store = createStore(

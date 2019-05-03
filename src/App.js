@@ -24,6 +24,11 @@ import getTheme from './Config/Temas/components';
  */
 import initializeAppFirebase from './Config/Firebase';
 
+/**
+ * Loading
+ */
+import { Loading } from 'react-native-easy-loading';
+
 type Props = {};
 export default class App extends Component<Props> {
 
@@ -44,6 +49,7 @@ export default class App extends Component<Props> {
             <Provider store={this.state.store}>
                 <Root>
                     <RootStack/>
+                    <Loading />
                 </Root>
             </Provider>
         </StyleProvider>

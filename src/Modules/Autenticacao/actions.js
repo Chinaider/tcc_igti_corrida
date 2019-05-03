@@ -1,4 +1,5 @@
 import { LOGIN, CADASTRO_SUCESSO, ERROR } from "./constants";
+import { app } from '../App/index';
 import messages from '../../Config/Firebase/messages';
 import firebase from 'firebase';
 
@@ -16,6 +17,7 @@ export const login = (usuarioEmail:string,usuarioSenha:string) => {
 
 export const efetuarCadastro = (nome:string,email:string,senha:string) => {
     return dispatch => {
+        dispatch(app.actions.loading(true));
         firebase.auth().createUserWithEmailAndPassword(email,senha)
             .then(user => {
                 dispatch({
@@ -28,15 +30,12 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
                 });
             })
             .catch(error => {
-                console.log('=== ERROR ===');
-                console.log(error);
-                console.log(messages);
                 dispatch({
                     type: ERROR,
                     payload:{
                         error: messages[error.code]
                     }
                 })
-            });
+            }).finally(() => dispatch(app.actions.loading(false)));
     }
 };
