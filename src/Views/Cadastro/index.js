@@ -24,10 +24,9 @@ const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
 
 
 const required = value => value ? undefined : 'Campo Obrigatorio.';
-const maxLength = max => value =>
-    value && value.length > max ? `Deve conter no máximo  ${max} caracteres ou menos.` : undefined;
 const minValue = min => value =>
     value && value.length < min ? `Deve conter pelo menos ${min} caracteres.` : undefined;
+const minValue4 = minValue(4);
 const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
         'E-mail inválido' : undefined;
@@ -55,7 +54,7 @@ class CadastroView extends Component {
         );
     }
 
-    renderInput({input:{value,onChange,...restInput},label,type,autoCapitalize,icon,secureTextEntry, meta: { touched, error, warning } }){
+    renderInput({input:{value,onChange,maxLength,...restInput},label,type,autoCapitalize,icon,secureTextEntry, meta: { touched, error, warning } }){
        return (
            <View>
                <Item style={style.itemForm} error={error && touched} floatingLabel>
@@ -69,6 +68,7 @@ class CadastroView extends Component {
                        secureTextEntry={(secureTextEntry) ? true : false}
                        onChangeText={(value) => onChange(value)}
                        value={value}
+                       maxLength={maxLength}
                        {...restInput}/>
                    {(error && touched) ? <Icon style={style.iconError}  name="close"/> : <Text/>}
                </Item>
@@ -106,9 +106,10 @@ class CadastroView extends Component {
                                         name="nome"
                                         icon="person"
                                         label="Nome"
+                                        maxLength={50}
                                         type="default"
                                         autoCapitalize={true}
-                                        validate={[required]}
+                                        validate={[required,minValue4]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -116,9 +117,10 @@ class CadastroView extends Component {
                                         name="email"
                                         icon="mail"
                                         label="E-mail"
+                                        maxLength={30}
                                         type="email-address"
                                         autoCapitalize={false}
-                                        validate={[required,email]}
+                                        validate={[required,email,minValue(8)]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -126,10 +128,11 @@ class CadastroView extends Component {
                                         name="senha"
                                         icon="lock"
                                         label="Senha"
+                                        maxLength={25}
                                         type="default"
                                         autoCapitalize={false}
                                         secureTextEntry={true}
-                                        validate={[required]}
+                                        validate={[required,minValue(6)]}
                                         style={{marginBottom: 5}}
                                     />
                                 </KeyboardAwareScrollView>
