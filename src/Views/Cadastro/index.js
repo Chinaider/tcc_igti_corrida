@@ -27,6 +27,8 @@ const required = value => value ? undefined : 'Campo Obrigatorio.';
 const minValue = min => value =>
     value && value.length < min ? `Deve conter pelo menos ${min} caracteres.` : undefined;
 const minValue4 = minValue(4);
+const minValue8 = minValue(8);
+const minValue6 = minValue(6);
 const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
         'E-mail inválido' : undefined;
@@ -120,7 +122,7 @@ class CadastroView extends Component {
                                         maxLength={30}
                                         type="email-address"
                                         autoCapitalize={false}
-                                        validate={[required,email,minValue(8)]}
+                                        validate={[required,email,minValue8]}
                                         style={{marginBottom: 5}}
                                     />
                                     <Field
@@ -132,7 +134,7 @@ class CadastroView extends Component {
                                         type="default"
                                         autoCapitalize={false}
                                         secureTextEntry={true}
-                                        validate={[required,minValue(6)]}
+                                        validate={[required,minValue6]}
                                         style={{marginBottom: 5}}
                                     />
                                 </KeyboardAwareScrollView>

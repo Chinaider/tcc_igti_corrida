@@ -7,5 +7,8 @@ const config = {
     storageBucket: "app-corrida-64365.appspot.com",
     messagingSenderId: "193666225509"
 };
-const initializeAppFirebase = () => firebase.initializeApp(config);
+const initializeAppFirebase = () => {
+    firebase.initializeApp(config);
+    firebase.auth().useDeviceLanguage();
+};
 export default initializeAppFirebase;
