@@ -4,16 +4,18 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import Autenticacao  from './../../Views/Autenticacao';
 import Cadastro from './../../Views/Cadastro';
 import Home from './../../Views/Home';
+import Feed from './../../Views/Feed';
 
 const AppNavigator = createStackNavigator(
     {
         Login: { screen: Autenticacao },
         Cadastro: { screen: Cadastro },
-        Home: { screen: Home }
+        Home: { screen: Home },
+        Feed: { screen: Feed }
     },
     {
         index: 0,
-        initialRouteName: "Home",
+        initialRouteName: "Feed",
         headerMode: "none"
     }
 );
