@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
 import MapView, { Marker, AnimatedRegion } from 'react-native-maps';
 import MapDetails from '../MapDetails';
+import Directions from '../Directions';
 
 const latitudeDelta = 0.0143;
 const longitudeDelta = 0.0134;
@@ -33,14 +34,12 @@ class Map extends Component{
     }
 
     componentWillUnmount() {
-        if(this.watchID){
-            navigator.geolocation.clearWatch(this.watchID);
-        }
+       this.pararCorrida();
     }
 
     render(){
-        const { region } = this.props;
-
+        this.comecarCorrida();
+        const { region, origin, startWalk } = this.props;
         return (
             <View style={{flex:1}}>
                 <MapView
@@ -48,7 +47,20 @@ class Map extends Component{
                     initialRegion={region}
                     showsUserLocation={true}
                     loadingEnabled={true}
-                />
+                    loadingIndicatorColor="#FFFFFF"
+                    loadingBackgroundColor="#000000"
+                    rotateEnabled={false}
+                    scrollEnabled={false}
+                    pitchEnabled={false}
+                >
+                    {(startWalk && (origin != null) && origin.latitude != region.latitude) && (
+                        <Directions
+                            origin={origin}
+                            destination={region}
+                            onReady={() => {}}
+                        />
+                    )}
+                </MapView>
                 <MapDetails/>
             </View>
         )
@@ -58,7 +70,6 @@ class Map extends Component{
         if(this.props.startWalk){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
-
                     const newCoordinate = {
                         latitude,
                         longitude,
@@ -67,13 +78,21 @@ class Map extends Component{
                     };
                    this.props.setRegion(newCoordinate);
                 }
-                ,() => {}
+                ,(error) => {console.log(error)}
                 ,{
                     timeout: 2000,
                     enableHighAccuracy: true,
                     maximumAge: 1000,
                     distanceFilter: 10
-                })
+                });
+            return;
+        }
+        this.pararCorrida();
+    }
+
+    pararCorrida(){
+        if(this.watchID){
+            navigator.geolocation.clearWatch(this.watchID);
         }
     }
 }
@@ -86,10 +105,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state : States) {
-    const { region, startWalk } = state.map;
+    const { region, startWalk, origin } = state.map;
     return {
         region,
-        startWalk
+        startWalk,
+        origin
     };
 };
 

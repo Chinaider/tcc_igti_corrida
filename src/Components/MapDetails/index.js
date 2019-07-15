@@ -7,9 +7,10 @@ import { actions, States } from '../../Modules';
 class MapDetails extends Component{
 
     render(){
+        const { startWalk } = this.props;
         return (
             <Container style={style.container}>
-                {this.telaInicarCorrida()}
+                { (startWalk) ? this.telaPatarCorrida() :  this.telaInicarCorrida()}
             </Container>
         );
     }
@@ -18,9 +19,21 @@ class MapDetails extends Component{
         return (
             <View>
                 <Text> Começar a Correr </Text>
-                <Button large rounded success iconRight style={style.botao} onPress={() => this.props.iniciarCorrida(true)}>
+                <Button large rounded success iconRight style={style.botao} onPress={() => this.props.iniciarCorrida(true,this.props.region)}>
                     <Text>Iniciar</Text>
                     <Icon name='play'/>
+                </Button>
+            </View>
+        );
+    }
+
+    telaPatarCorrida(){
+        return (
+            <View>
+                <Text> Parar de Correr </Text>
+                <Button large rounded danger iconRight style={style.botao} onPress={() => this.props.pararCorrida()}>
+                    <Text>Parar</Text>
+                    <Icon name='pause'/>
                 </Button>
             </View>
         );
@@ -29,14 +42,16 @@ class MapDetails extends Component{
 
 function mapDispatchToProps(dispatch) {
     return {
-        iniciarCorrida:(startWalk:boolean) => dispatch(actions.map.startWalk(startWalk))
+        iniciarCorrida:(startWalk:boolean,origin:any) => dispatch(actions.map.startWalk(startWalk,origin)),
+        pararCorrida: () => dispatch(actions.map.stopWalk())
     };
 }
 
 function mapStateToProps(state : States) {
-    const startWalk = state.map.startWalk;
+    const {startWalk, region} = state.map;
     return {
-        startWalk
+        startWalk,
+        region
     };
 }
 
