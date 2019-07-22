@@ -19,7 +19,7 @@ class MapDetails extends Component{
         return (
             <View>
                 <Text> Começar a Correr </Text>
-                <Button large rounded success iconRight style={style.botao} onPress={() => this.props.iniciarCorrida(true,this.props.region)}>
+                <Button large rounded success iconRight style={style.botao} onPress={() => this.props.iniciarCorrida(true,[this.props.region])}>
                     <Text>Iniciar</Text>
                     <Icon name='play'/>
                 </Button>
@@ -42,7 +42,7 @@ class MapDetails extends Component{
 
 function mapDispatchToProps(dispatch) {
     return {
-        iniciarCorrida:(startWalk:boolean,origin:any) => dispatch(actions.map.startWalk(startWalk,origin)),
+        iniciarCorrida:(startWalk:boolean,coordinates:any) => dispatch(actions.map.startWalk(startWalk,coordinates)),
         pararCorrida: () => dispatch(actions.map.stopWalk())
     };
 }

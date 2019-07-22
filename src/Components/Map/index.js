@@ -16,6 +16,80 @@ class Map extends Component{
     }
 
     async componentDidMount(): void {
+        this.pegarPosicaoAtual();
+    }
+
+    componentWillUnmount() {
+       this.pararCorrida();
+    }
+
+    render(){
+        this.comecarCorrida();
+        const { coordinates , region ,  startWalk } = this.props;
+        return (
+            <View style={{flex:1}}>
+                <MapView
+                    style={{flex:1}}
+                    initialRegion={region}
+                    showsUserLocation={true}
+                    loadingEnabled={true}
+                    loadingIndicatorColor="#FFFFFF"
+                    loadingBackgroundColor="#000000"
+                    rotateEnabled={false}
+                    scrollEnabled={false}
+                    pitchEnabled={false}
+                >
+                    {(startWalk && coordinates && coordinates.length >= 1) && (
+                        <Directions
+                            origin={coordinates[0]}
+                            waypoints={(coordinates.length > 2) ? coordinates.slice(1,-1) : null}
+                            destination={coordinates[coordinates.length-1]}
+                            onReady={() => {}}
+                        />
+                    )}
+                </MapView>
+                <MapDetails/>
+            </View>
+        )
+    }
+
+    comecarCorrida(){
+        if(this.props.startWalk){
+            this.watchID = navigator.geolocation
+                .watchPosition(({coords: {latitude, longitude}}) => {
+                    if(this.props.coordinates.length >= 1){
+                        const { coordinates } = this.props;
+                        const newCoordinate = {
+                            latitude,
+                            longitude,
+                            latitudeDelta,
+                            longitudeDelta
+                        };
+                        if(coordinates.length === 1){
+                            this.props.setRegion(newCoordinate);
+                        }
+                        coordinates.push(newCoordinate);
+                        this.props.setCoordinates(coordinates);
+                    }
+                }
+                ,(error) => {console.log(error)}
+                ,{
+                    timeout: 2000,
+                    enableHighAccuracy: true,
+                    maximumAge: 1000,
+                });
+            return;
+        }
+        this.pararCorrida();
+    }
+
+    pararCorrida(){
+        if(this.watchID){
+            navigator.geolocation.clearWatch(this.watchID);
+        }
+    }
+
+    pegarPosicaoAtual(){
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
                 this.props.setRegion({
@@ -32,84 +106,22 @@ class Map extends Component{
                 maximumAge: 1000
             });
     }
-
-    componentWillUnmount() {
-       this.pararCorrida();
-    }
-
-    render(){
-        this.comecarCorrida();
-        const { region, origin, startWalk } = this.props;
-        return (
-            <View style={{flex:1}}>
-                <MapView
-                    style={{flex:1}}
-                    initialRegion={region}
-                    showsUserLocation={true}
-                    loadingEnabled={true}
-                    loadingIndicatorColor="#FFFFFF"
-                    loadingBackgroundColor="#000000"
-                    rotateEnabled={false}
-                    scrollEnabled={false}
-                    pitchEnabled={false}
-                >
-                    {(startWalk && (origin != null) && origin.latitude != region.latitude) && (
-                        <Directions
-                            origin={origin}
-                            destination={region}
-                            onReady={() => {}}
-                        />
-                    )}
-                </MapView>
-                <MapDetails/>
-            </View>
-        )
-    }
-
-    comecarCorrida(){
-        if(this.props.startWalk){
-            this.watchID = navigator.geolocation
-                .watchPosition(({coords: {latitude, longitude}}) => {
-                    const newCoordinate = {
-                        latitude,
-                        longitude,
-                        latitudeDelta,
-                        longitudeDelta
-                    };
-                   this.props.setRegion(newCoordinate);
-                }
-                ,(error) => {console.log(error)}
-                ,{
-                    timeout: 2000,
-                    enableHighAccuracy: true,
-                    maximumAge: 1000,
-                    distanceFilter: 10
-                });
-            return;
-        }
-        this.pararCorrida();
-    }
-
-    pararCorrida(){
-        if(this.watchID){
-            navigator.geolocation.clearWatch(this.watchID);
-        }
-    }
 }
 
 
 function mapDispatchToProps(dispatch) {
     return {
+        setCoordinates: (coordinates) => dispatch(actions.map.setCoordinates(coordinates)),
         setRegion: (region) => dispatch(actions.map.setRegion(region))
     };
 }
 
 function mapStateToProps(state : States) {
-    const { region, startWalk, origin } = state.map;
+    const { region, startWalk, coordinates } = state.map;
     return {
         region,
         startWalk,
-        origin
+        coordinates
     };
 };
 
