@@ -13,6 +13,7 @@ class Map extends Component{
 
     constructor(props){
         super(props);
+        this.state = {id:0};
     }
 
     async componentDidMount(): void {
@@ -26,6 +27,7 @@ class Map extends Component{
     render(){
         this.comecarCorrida();
         const { coordinates , region ,  startWalk } = this.props;
+        const { id } = this.state;
         return (
             <View style={{flex:1}}>
                 <MapView
@@ -39,11 +41,12 @@ class Map extends Component{
                     scrollEnabled={false}
                     pitchEnabled={false}
                 >
-                    {(startWalk && coordinates && coordinates.length >= 1) && (
+                    {(startWalk) && (
                         <Directions
                             origin={coordinates[0]}
                             waypoints={(coordinates.length > 2) ? coordinates.slice(1,-1) : null}
                             destination={coordinates[coordinates.length-1]}
+                            id={id}
                             onReady={() => {}}
                         />
                     )}
@@ -53,7 +56,7 @@ class Map extends Component{
         )
     }
 
-    comecarCorrida(){
+    comecarCorrida = () => {
         if(this.props.startWalk){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
@@ -71,6 +74,8 @@ class Map extends Component{
                         coordinates.push(newCoordinate);
                         this.props.setCoordinates(coordinates);
                     }
+                    this.setState({id:Math.floor(Math.random() * 100)});
+
                 }
                 ,(error) => {console.log(error)}
                 ,{
