@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
-import MapView, { Marker, AnimatedRegion } from 'react-native-maps';
+import MapView, {  Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import MapDetails from '../MapDetails';
-import Directions from '../Directions';
 
 const latitudeDelta = 0.0143;
 const longitudeDelta = 0.0134;
@@ -13,7 +12,6 @@ class Map extends Component{
 
     constructor(props){
         super(props);
-        this.state = {id:0};
     }
 
     async componentDidMount(): void {
@@ -24,15 +22,31 @@ class Map extends Component{
        this.pararCorrida();
     }
 
+    direcao(){
+        const {  startWalk, coordinates, region } = this.props;
+
+
+
+        if(!startWalk || coordinates.length == 0){
+            return;
+        }//animated cordinate
+        return (
+            <View>
+                <Polyline coordinates={coordinates}  strokeWidth={3} />
+            </View>
+        );
+    }
+
     render(){
         this.comecarCorrida();
-        const { coordinates , region ,  startWalk } = this.props;
-        const { id } = this.state;
+        const {  region } = this.props;
         return (
             <View style={{flex:1}}>
                 <MapView
                     style={{flex:1}}
                     initialRegion={region}
+                    provider={PROVIDER_GOOGLE}
+                    followsUserLocation={true}
                     showsUserLocation={true}
                     loadingEnabled={true}
                     loadingIndicatorColor="#FFFFFF"
@@ -41,15 +55,7 @@ class Map extends Component{
                     scrollEnabled={false}
                     pitchEnabled={false}
                 >
-                    {(startWalk) && (
-                        <Directions
-                            origin={coordinates[0]}
-                            waypoints={(coordinates.length > 2) ? coordinates.slice(1,-1) : null}
-                            destination={coordinates[coordinates.length-1]}
-                            id={id}
-                            onReady={() => {}}
-                        />
-                    )}
+                    {this.direcao()}
                 </MapView>
                 <MapDetails/>
             </View>
@@ -57,31 +63,24 @@ class Map extends Component{
     }
 
     comecarCorrida = () => {
-        if(this.props.startWalk){
+        const { coordinates, startWalk } = this.props;
+        if(startWalk){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
-                    if(this.props.coordinates.length >= 1){
-                        const { coordinates } = this.props;
+                    if(coordinates.length >= 1){
                         const newCoordinate = {
                             latitude,
-                            longitude,
-                            latitudeDelta,
-                            longitudeDelta
+                            longitude
                         };
-                        if(coordinates.length === 1){
-                            this.props.setRegion(newCoordinate);
-                        }
-                        coordinates.push(newCoordinate);
-                        this.props.setCoordinates(coordinates);
+                        this.props.setCoordinates(coordinates.concat(newCoordinate));
                     }
-                    this.setState({id:Math.floor(Math.random() * 100)});
-
                 }
                 ,(error) => {console.log(error)}
                 ,{
-                    timeout: 2000,
-                    enableHighAccuracy: true,
-                    maximumAge: 1000,
+                        enableHighAccuracy: true,
+                        timeout: 2000000,
+                        maximumAge: 1000,
+                        distanceFilter: 10
                 });
             return;
         }
@@ -97,12 +96,13 @@ class Map extends Component{
     pegarPosicaoAtual(){
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
-                this.props.setRegion({
+                const data = {
                     latitude,
                     longitude,
                     latitudeDelta,
-                    longitudeDelta,
-                });
+                    longitudeDelta};
+                this.props.setRegion(data);
+                this.setState({regiao:new AnimatedRegion(data)});
             },
             () => {},
             {
