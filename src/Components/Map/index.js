@@ -24,15 +24,12 @@ class Map extends Component{
 
     direcao(){
         const {  startWalk, coordinates, region } = this.props;
-
-
-
         if(!startWalk || coordinates.length == 0){
             return;
         }//animated cordinate
         return (
             <View>
-                <Polyline coordinates={coordinates}  strokeWidth={3} />
+                <Polyline coordinates={Object.assign([],coordinates)}  strokeWidth={3} />
             </View>
         );
     }
@@ -68,19 +65,26 @@ class Map extends Component{
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
                     if(coordinates.length >= 1){
+                        var last = coordinates[coordinates.length-1];
+                        if(last.latitude === latitude && last.longitude === longitude){
+                            return;
+                        }
                         const newCoordinate = {
                             latitude,
                             longitude
                         };
                         this.props.setCoordinates(coordinates.concat(newCoordinate));
+                        console.log('china aqui');
+                        console.log(coordinates);
+
                     }
                 }
                 ,(error) => {console.log(error)}
                 ,{
                         enableHighAccuracy: true,
-                        timeout: 2000000,
-                        maximumAge: 1000,
-                        distanceFilter: 10
+                        timeout: 2000,
+                        maximumAge: 0,
+                        distanceFilter: 25
                 });
             return;
         }
