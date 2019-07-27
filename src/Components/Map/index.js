@@ -12,6 +12,7 @@ class Map extends Component{
 
     constructor(props){
         super(props);
+        this.state = {cords: []};
     }
 
     async componentDidMount(): void {
@@ -23,16 +24,13 @@ class Map extends Component{
     }
 
     direcao(){
-        const {  startWalk, coordinates, region } = this.props;
-
-
-
-        if(!startWalk || coordinates.length == 0){
+        const {  startWalk } = this.props;
+        if(!startWalk || this.state.cords.length == 0){
             return;
-        }//animated cordinate
+        }
         return (
             <View>
-                <Polyline coordinates={coordinates}  strokeWidth={3} />
+                <Polyline coordinates={Object.assign([],this.state.cords)}  strokeWidth={3} />
             </View>
         );
     }
@@ -63,28 +61,22 @@ class Map extends Component{
     }
 
     comecarCorrida = () => {
-        const { coordinates, startWalk } = this.props;
-        if(startWalk){
+        if(this.props.startWalk && !this.watchID){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
-                    if(coordinates.length >= 1){
-                        const newCoordinate = {
-                            latitude,
-                            longitude
-                        };
-                        this.props.setCoordinates(coordinates.concat(newCoordinate));
-                    }
+                    let newCords = Object.assign([],this.state.cords);
+                    newCords.push({latitude, longitude});
+                    this.setState({cords:newCords});
                 }
                 ,(error) => {console.log(error)}
                 ,{
                         enableHighAccuracy: true,
-                        timeout: 2000000,
-                        maximumAge: 1000,
-                        distanceFilter: 10
+                        timeout: 0,
+                        maximumAge: 0,
+                        distanceFilter: 25
                 });
             return;
         }
-        this.pararCorrida();
     }
 
     pararCorrida(){
