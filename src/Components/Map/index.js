@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
 import MapView, {  Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import MapDetails from '../MapDetails';
+import haversine from "haversine";
 
 const latitudeDelta = 0.0143;
 const longitudeDelta = 0.0134;
@@ -12,7 +13,11 @@ class Map extends Component{
 
     constructor(props){
         super(props);
-        this.state = {cords: []};
+        this.state = {
+            cords: [],
+            distanceTravelled: 0,
+            prevLatLng: {}
+        };
     }
 
     async componentDidMount(): void {
@@ -64,9 +69,16 @@ class Map extends Component{
         if(this.props.startWalk && !this.watchID){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
+                    const { distanceTravelled, prevLatLng } = this.state;
+                    const newCoordinate = {latitude, longitude};
                     let newCords = Object.assign([],this.state.cords);
-                    newCords.push({latitude, longitude});
-                    this.setState({cords:newCords});
+                    newCords.push(newCoordinate);
+                    this.setState({
+                        cords:newCords,
+                        distanceTravelled: distanceTravelled + this.calcularDistancia(newCoordinate,prevLatLng),
+                        prevLatLng: newCoordinate
+                    });
+                    console.log(distanceTravelled);
                 }
                 ,(error) => {console.log(error)}
                 ,{
@@ -102,6 +114,10 @@ class Map extends Component{
                 enableHighAccuracy: true,
                 maximumAge: 1000
             });
+    }
+
+    calcularDistancia = (newCordinate,prevLatLng) => {
+        return haversine(prevLatLng, newCordinate) || 0;
     }
 }
 
