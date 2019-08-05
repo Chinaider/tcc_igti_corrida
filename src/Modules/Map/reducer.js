@@ -22,7 +22,7 @@ export default handleActions({
         return {...state,coordinates: action.payload.coordinates}
     },
     [START_WALK]: (state:MapState,action):MapState => {
-     return {...state,startWalk:action.payload.startWalk,coordinates: action.payload.coordinates}
+     return {...state,startWalk:true}
     },
     [STOP_WALK]:(state:MapState,action):MapState => {
         return {...state,startWalk:false,coordinates:[]}

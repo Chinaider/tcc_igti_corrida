@@ -11,7 +11,7 @@ import RootStack from './Config/Routes';
  **/
 import { Provider } from 'react-redux';
 import  configureStore  from './Config/Store';
-
+import { actions } from './Modules'
 /**
  * Tema
  */
@@ -37,6 +37,7 @@ export default class App extends Component<Props> {
       this.state = {
         store: configureStore(() => {})
       };
+      this.state.store.dispatch(actions.app.checkAccessLocation());
   }
 
   componentWillMount(): void {

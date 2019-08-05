@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
-import { Container,Button,Text, Icon, View } from 'native-base';
-import style  from './style';
+import { View, Text, Button } from 'native-base';
+import Card from './../Card';
+import  LinearGradient  from 'react-native-linear-gradient'
+import styles  from './style';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
 
@@ -9,40 +11,46 @@ class MapDetails extends Component{
     render(){
         const { startWalk } = this.props;
         return (
-            <Container style={style.container}>
-                { (startWalk) ? this.telaPatarCorrida() :  this.telaInicarCorrida()}
-            </Container>
-        );
-    }
-
-    telaInicarCorrida(){
-        return (
-            <View>
-                <Text> Começar a Correr </Text>
-                <Button large rounded success iconRight style={style.botao} onPress={() => this.props.iniciarCorrida(true,[this.props.region])}>
-                    <Text>Iniciar</Text>
-                    <Icon name='play'/>
-                </Button>
-            </View>
-        );
-    }
-
-    telaPatarCorrida(){
-        return (
-            <View>
-                <Text> Parar de Correr </Text>
-                <Button large rounded danger iconRight style={style.botao} onPress={() => this.props.pararCorrida()}>
-                    <Text>Parar</Text>
-                    <Icon name='pause'/>
-                </Button>
-            </View>
+            <Card>
+                <LinearGradient pointerEvents="none" colors={ ['rgba(252, 252, 252,0)', 'rgba(252, 252, 252,0.8)', 'rgba(252, 252, 252,1)', 'rgba(252, 252, 252,1)'] } style={ { height: 20, position: 'absolute', top: -10, left: 0, right: 0 } } />
+                <View style={styles.cardHeader}>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={styles.cardLabel}>PONTOS ACUMULADOS</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.cardContent}>
+                    <Text style={{fontFamily: 'bebas-neue', fontSize: 44, color: '#ec242e'}}>12.035</Text>
+                </View>
+                <View style={styles.cardContent}>
+                    <View style={{flex: 1,alignItems: 'flex-start'}}>
+                        <Text style={styles.cardLabel}>DISTANCIA TOTAL</Text>
+                        <Text style={[styles.cardText,{alignItems:'center'}]}>
+                            27.81
+                            <Text style={styles.cardTextSmall}>KM</Text>
+                        </Text>
+                    </View>
+                    <View style={{flex: 1,alignItems: 'flex-end'}}>
+                        <Text style={styles.cardLabel}>TEMPO TOTAL</Text>
+                        <Text style={styles.cardText}>
+                             21:55:11
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.cardContent}>
+                    <Button large rounded iconRight style={styles.buttonRed} onPress={() => this.props.iniciarCorrida(true,[this.props.region])}>
+                        <Text style={ styles.buttonRedText }>COMEÇAR</Text>
+                    </Button>
+                </View>
+            </Card>
         );
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        iniciarCorrida:(startWalk:boolean,coordinates:any) => dispatch(actions.map.startWalk(startWalk,coordinates)),
+        iniciarCorrida:() => dispatch(actions.map.startWalk()),
         pararCorrida: () => dispatch(actions.map.stopWalk())
     };
 }

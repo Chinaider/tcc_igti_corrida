@@ -22,14 +22,11 @@ export const setCoordinates = (coordinates:any[]) => {
     };
 };
 
-export const startWalk = (start:boolean,coordinates:any[]) => {
+export const startWalk = () => {
     return dispatch => {
         dispatch({
             type: START_WALK,
-            payload: {
-                startWalk: start,
-                coordinates
-            }
+            payload: {}
         })
     };
 };

@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
-import { View } from 'react-native';
+import { View} from 'react-native';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
-import MapView, {  Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {  Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import MapDetails from '../MapDetails';
 import haversine from "haversine";
 
 const latitudeDelta = 0.0143;
 const longitudeDelta = 0.0134;
-
 class Map extends Component{
 
     constructor(props){
@@ -16,7 +15,8 @@ class Map extends Component{
         this.state = {
             cords: [],
             distanceTravelled: 0,
-            prevLatLng: {}
+            prevLatLng: {},
+            initialRegion:{}
         };
     }
 
@@ -42,13 +42,15 @@ class Map extends Component{
 
     render(){
         this.comecarCorrida();
-        const {  region } = this.props;
+        const {  initialRegion } = this.state;
+        if(Object.keys(initialRegion).length == 0){
+            return <View/>;
+        }
         return (
             <View style={{flex:1}}>
                 <MapView
-                    style={{flex:1}}
-                    initialRegion={region}
-                    provider={PROVIDER_GOOGLE}
+                    style={{flex:1,height: 500,position: 'relative'}}
+                    initialRegion={initialRegion}
                     followsUserLocation={true}
                     showsUserLocation={true}
                     loadingEnabled={true}
@@ -57,6 +59,12 @@ class Map extends Component{
                     rotateEnabled={false}
                     scrollEnabled={false}
                     pitchEnabled={false}
+                    showsMyLocationButton={false}
+                    zoomEnabled={false}
+                    zoomTapEnabled={false}
+                    zoomControlEnabled={false}
+                    showsTraffic={false}
+                    ref={el => this.mapView = el}
                 >
                     {this.direcao()}
                 </MapView>
@@ -73,12 +81,15 @@ class Map extends Component{
                     const newCoordinate = {latitude, longitude};
                     let newCords = Object.assign([],this.state.cords);
                     newCords.push(newCoordinate);
+                        if(newCords.length > 2){
+                            this.mapView.filToCoordinates(newCords);
+                        }
                     this.setState({
                         cords:newCords,
                         distanceTravelled: distanceTravelled + this.calcularDistancia(newCoordinate,prevLatLng),
                         prevLatLng: newCoordinate
                     });
-                    console.log(distanceTravelled);
+
                 }
                 ,(error) => {console.log(error)}
                 ,{
@@ -98,6 +109,7 @@ class Map extends Component{
     }
 
     pegarPosicaoAtual(){
+        console.log(navigator);
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
                 const data = {
@@ -105,12 +117,11 @@ class Map extends Component{
                     longitude,
                     latitudeDelta,
                     longitudeDelta};
-                this.props.setRegion(data);
-                this.setState({regiao:new AnimatedRegion(data)});
+                this.setState({initialRegion:data});
             },
-            () => {},
+            (error) => {console.log(error)},
             {
-                timeout: 2000,
+                timeout: 50000,
                 enableHighAccuracy: true,
                 maximumAge: 1000
             });
@@ -124,15 +135,13 @@ class Map extends Component{
 
 function mapDispatchToProps(dispatch) {
     return {
-        setCoordinates: (coordinates) => dispatch(actions.map.setCoordinates(coordinates)),
-        setRegion: (region) => dispatch(actions.map.setRegion(region))
+        setCoordinates: (coordinates) => dispatch(actions.map.setCoordinates(coordinates))
     };
 }
 
 function mapStateToProps(state : States) {
-    const { region, startWalk, coordinates } = state.map;
+    const {  startWalk, coordinates } = state.map;
     return {
-        region,
         startWalk,
         coordinates
     };
