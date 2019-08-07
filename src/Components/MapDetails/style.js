@@ -38,4 +38,13 @@ export default StyleSheet.create({
         color: '#fff',
         fontSize: 24
     },
+    card: {
+        backgroundColor: '#fcfcfc',
+        position: 'relative',
+        paddingHorizontal: 20,
+        paddingVertical: 20
+    },
+    text: {
+        backgroundColor: 'transparent',
+    },
 });

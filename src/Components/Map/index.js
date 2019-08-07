@@ -1,13 +1,43 @@
 import React, {Component} from 'react';
-import { View} from 'react-native';
+import { View, PixelRatio } from 'react-native';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
 import MapView, {  Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import MapDetails from '../MapDetails';
 import haversine from "haversine";
 
-const latitudeDelta = 0.0143;
-const longitudeDelta = 0.0134;
+const latitudeDelta = 0.0083;
+const longitudeDelta = 0.0084;
+
+const styleMap = [
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "color": "#c0c0c0"
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.government",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    }
+];
 class Map extends Component{
 
     constructor(props){
@@ -40,40 +70,47 @@ class Map extends Component{
         );
     }
 
+    mapa(initialRegion){
+        return (<MapView
+            ref={el => this.mapView = el}
+            style={{flex:1,marginLeft:1}}
+            initialRegion={initialRegion}
+            customMapStyle={styleMap}
+            followsUserLocation={true}
+            showsUserLocation={true}
+            loadingEnabled={true}
+            loadingIndicatorColor="#FFFFFF"
+            loadingBackgroundColor="#000000"
+            rotateEnabled={false}
+            scrollEnabled={false}
+            pitchEnabled={false}
+            showsMyLocationButton={true}
+            zoomEnabled={true}
+            zoomTapEnabled={true}
+            zoomControlEnabled={false}
+            showsTraffic={false}
+            onMapReady={() => {
+                console.log(this.mapView);
+                this.mapView.map.setNativeProps({ style: {...this.props.style, marginLeft: 0} });
+            }}
+        >
+            {this.direcao()}
+        </MapView>);
+    }
+
     render(){
         this.comecarCorrida();
         const {  initialRegion } = this.state;
-        if(Object.keys(initialRegion).length == 0){
-            return <View/>;
-        }
         return (
             <View style={{flex:1}}>
-                <MapView
-                    style={{flex:1,height: 500,position: 'relative'}}
-                    initialRegion={initialRegion}
-                    followsUserLocation={true}
-                    showsUserLocation={true}
-                    loadingEnabled={true}
-                    loadingIndicatorColor="#FFFFFF"
-                    loadingBackgroundColor="#000000"
-                    rotateEnabled={false}
-                    scrollEnabled={false}
-                    pitchEnabled={false}
-                    showsMyLocationButton={false}
-                    zoomEnabled={false}
-                    zoomTapEnabled={false}
-                    zoomControlEnabled={false}
-                    showsTraffic={false}
-                    ref={el => this.mapView = el}
-                >
-                    {this.direcao()}
-                </MapView>
-                <MapDetails/>
+                {(Object.keys(initialRegion).length != 0) && this.mapa(initialRegion)}
+                <MapDetails km={parseFloat(this.state.distanceTravelled).toFixed(2)}/>
             </View>
         )
     }
 
     comecarCorrida = () => {
+        const pixelMargin = PixelRatio.getPixelSizeForLayoutSize(50);
         if(this.props.startWalk && !this.watchID){
             this.watchID = navigator.geolocation
                 .watchPosition(({coords: {latitude, longitude}}) => {
@@ -81,8 +118,15 @@ class Map extends Component{
                     const newCoordinate = {latitude, longitude};
                     let newCords = Object.assign([],this.state.cords);
                     newCords.push(newCoordinate);
-                        if(newCords.length > 2){
-                            this.mapView.filToCoordinates(newCords);
+                        if(newCords.length >= 4 && newCords.length % 4 === 0){
+                            this.mapView.fitToCoordinates(newCords,{
+                                edgePadding:{
+                                    right: pixelMargin,
+                                    left: pixelMargin,
+                                    top: pixelMargin,
+                                    bottom: pixelMargin
+                                }
+                            });
                         }
                     this.setState({
                         cords:newCords,
@@ -109,7 +153,6 @@ class Map extends Component{
     }
 
     pegarPosicaoAtual(){
-        console.log(navigator);
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
                 const data = {
@@ -135,7 +178,8 @@ class Map extends Component{
 
 function mapDispatchToProps(dispatch) {
     return {
-        setCoordinates: (coordinates) => dispatch(actions.map.setCoordinates(coordinates))
+        setCoordinates: (coordinates) => dispatch(actions.map.setCoordinates(coordinates)),
+        loading: (bool:boolean,text = 'Carregando Mapa') => dispatch(actions.app.loading(bool,text))
     };
 }
 
