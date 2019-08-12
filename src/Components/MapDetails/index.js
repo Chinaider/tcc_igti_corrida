@@ -78,7 +78,7 @@ class MapDetails extends Component{
                     </View>
 
                     <View style={{flex:3,alignItems: 'flex-end'} }>
-                        <Text style={ [styles.text, { fontSize: 34, color: '#f02733' }] }>1566 <Icon style={{fontSize: 18,color:'#f02733' }} type={"FontAwesome5"} name="gem"/></Text>
+                        <Text style={ [styles.text, { fontSize: 34, color: '#f02733' }] }>{this.props.points} <Icon style={{fontSize: 18,color:'#f02733' }} type={"FontAwesome5"} name="gem"/></Text>
                         <Text style={ [styles.text, { fontSize: 22,color: '#adadad'}] }>
                             <Icon style={[styles.text, { fontSize: 22,color: '#adadad' }]} name="timer"/> {show}
                         </Text>
