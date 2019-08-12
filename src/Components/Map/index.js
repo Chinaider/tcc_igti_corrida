@@ -75,7 +75,6 @@ class Map extends Component{
             ref={el => this.mapView = el}
             style={{flex:1,marginLeft:1}}
             initialRegion={initialRegion}
-            customMapStyle={styleMap}
             followsUserLocation={true}
             showsUserLocation={true}
             loadingEnabled={true}
