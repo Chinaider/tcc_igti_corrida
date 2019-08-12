@@ -9,35 +9,6 @@ import haversine from "haversine";
 const latitudeDelta = 0.0083;
 const longitudeDelta = 0.0084;
 
-const styleMap = [
-    {
-        "featureType": "poi",
-        "stylers": [
-            {
-                "color": "#c0c0c0"
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.government",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    }
-];
 class Map extends Component{
 
     constructor(props){
@@ -46,7 +17,8 @@ class Map extends Component{
             cords: [],
             distanceTravelled: 0,
             prevLatLng: {},
-            initialRegion:{}
+            initialRegion:{},
+            points: 0
         };
     }
 
@@ -99,11 +71,11 @@ class Map extends Component{
 
     render(){
         this.comecarCorrida();
-        const {  initialRegion } = this.state;
+        const {  initialRegion, points } = this.state;
         return (
             <View style={{flex:1}}>
                 {(Object.keys(initialRegion).length != 0) && this.mapa(initialRegion)}
-                <MapDetails km={parseFloat(this.state.distanceTravelled).toFixed(2)}/>
+                <MapDetails km={parseFloat(this.state.distanceTravelled).toFixed(2)} points={parseInt(points)}/>
             </View>
         )
     }
@@ -117,7 +89,7 @@ class Map extends Component{
                     const newCoordinate = {latitude, longitude};
                     let newCords = Object.assign([],this.state.cords);
                     newCords.push(newCoordinate);
-                        if(newCords.length >= 4 && newCords.length % 4 === 0){
+                        if(newCords.length >= 2){
                             this.mapView.fitToCoordinates(newCords,{
                                 edgePadding:{
                                     right: pixelMargin,
@@ -130,7 +102,8 @@ class Map extends Component{
                     this.setState({
                         cords:newCords,
                         distanceTravelled: distanceTravelled + this.calcularDistancia(newCoordinate,prevLatLng),
-                        prevLatLng: newCoordinate
+                        prevLatLng: newCoordinate,
+                        points: this.state.points+0.25
                     });
 
                 }
