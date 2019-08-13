@@ -1,17 +1,32 @@
-import { LOGIN, CADASTRO_SUCESSO, ERROR } from "./constants";
+import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR } from "./constants";
 import { app } from '../App/index';
 import messages from '../../Config/Firebase/messages';
 import firebase, {User} from 'firebase';
 
-export const login = (usuarioEmail:string,usuarioSenha:string) => {
+export const login = (email:string,senha:string) => {
     return dispatch => {
-        dispatch({
-            type: LOGIN,
-            payload: {
-                email: usuarioEmail,
-                senha: usuarioSenha
-            }
-        });
+        dispatch(app.actions.loading(true));
+        firebase.auth().signInWithEmailAndPassword(email,senha)
+            .then((user:User) => {
+               dispatch({
+                   type: LOGIN_SUCESSO,
+                   payload: {
+                       email,
+                       logged: true,
+                       nome: user.displayName,
+                   }
+               });
+            }).catch(error => {
+                let msg  =  messages[error.code];
+                msg = (typeof msg == "undefined") ? 'Falha ao realizar operação' : msg;
+                dispatch(app.actions.loading(false));
+                dispatch({
+                    type: ERROR,
+                    payload:{
+                        error: msg
+                    }
+                })
+            }).finally(() => dispatch(app.actions.loading(false)));
     };
 };
 
@@ -28,7 +43,8 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
                         payload:{
                             email: email,
                             nome: nome,
-                            senha: senha
+                            senha: senha,
+                            logged: true
                         }
                     });
                 }).catch(error => {
@@ -39,7 +55,7 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
                             error: messages[error.code]
                         }
                     })
-                }).finally(dispatch(app.actions.loading(false)));
+                }).finally(() => dispatch(app.actions.loading(false)));
             })
             .catch(error => {
                 dispatch(app.actions.loading(false));

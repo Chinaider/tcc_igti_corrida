@@ -15,7 +15,7 @@ const AppNavigator = createStackNavigator(
     },
     {
         index: 0,
-        initialRouteName: "Feed",
+        initialRouteName: "Home",
         headerMode: "none"
     }
 );
