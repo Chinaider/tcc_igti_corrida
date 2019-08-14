@@ -91,6 +91,9 @@ class CadastroView extends Component {
     }
 
     render(){
+        if(this.props.logged){
+            this.props.navigation.navigate('Feed');
+        }
         return (
             <Container>
                 <View style={style.container}>
@@ -161,11 +164,13 @@ function mapStateToProps(state : States) {
     const nome = selector(state,'nome');
     const senha = selector(state,'senha');
     const error = state.autenticacao.error;
+    const logged = state.autenticacao.logged;
     return {
         email,
         nome,
         senha,
-        error
+        error,
+        logged
     };
 }
 

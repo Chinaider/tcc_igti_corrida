@@ -1,10 +1,14 @@
 import React,{Component} from 'react';
 import { View, Text, Button, Icon } from 'native-base';
+import { Dimensions } from 'react-native';
 import  LinearGradient  from 'react-native-linear-gradient';
 import moment from 'moment';
 import styles  from './style';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
+
+const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 
 class MapDetails extends Component{
 
@@ -20,7 +24,7 @@ class MapDetails extends Component{
         const { startWalk } = this.props;
         (startWalk) ? this.startTimer() : this.stopTimer();
         return (
-            <View style={styles.card} shadowColor={'#000'} shadowOffset={{width: 0, height: 10}} shadowOpacity={0.4} shadowRadius={20}>
+            <View style={styles.card}  shadowColor={'#000'} shadowOffset={{width: 0, height: 10}} shadowOpacity={0.4} shadowRadius={20}>
                 <LinearGradient pointerEvents="none" colors={ ['rgba(252, 252, 252,0)', 'rgba(252, 252, 252,0.8)', 'rgba(252, 252, 252,1)', 'rgba(252, 252, 252,1)'] } style={ { height: 20, position: 'absolute', top: -10, left: 0, right: 0 } } />
                 { (startWalk) ? this.telaPararCorrida() :  this.telaIniciarCorrida()}
             </View>
@@ -56,7 +60,7 @@ class MapDetails extends Component{
                     </View>
                 </View>
                 <View style={styles.cardContent}>
-                    <Button large rounded iconRight style={styles.buttonRed} onPress={() => this.props.iniciarCorrida()}>
+                    <Button large rounded iconRight disabled={(!this.props.mapReady)} style={styles.buttonRed} onPress={() => this.props.iniciarCorrida()}>
                         <Text style={ styles.buttonRedText }>COMEÇAR</Text>
                     </Button>
                 </View>

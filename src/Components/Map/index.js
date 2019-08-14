@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, PixelRatio } from 'react-native';
+import { View, PixelRatio, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { actions, States } from '../../Modules';
 import MapView, {  Marker, AnimatedRegion, Polyline } from 'react-native-maps';
@@ -18,7 +18,8 @@ class Map extends Component{
             distanceTravelled: 0,
             prevLatLng: {},
             initialRegion:{},
-            points: 0
+            points: 0,
+            mapReady: false
         };
     }
 
@@ -61,8 +62,8 @@ class Map extends Component{
             zoomControlEnabled={false}
             showsTraffic={false}
             onMapReady={() => {
-                console.log(this.mapView);
                 this.mapView.map.setNativeProps({ style: {...this.props.style, marginLeft: 0} });
+                this.setState({mapReady:true});
             }}
         >
             {this.direcao()}
@@ -72,10 +73,11 @@ class Map extends Component{
     render(){
         this.comecarCorrida();
         const {  initialRegion, points } = this.state;
+        const v = <View style={{position:'relative',flex:1,width:'100%',height: Math.round(Dimensions.get('window').height/2)}}/>;
         return (
             <View style={{flex:1}}>
-                {(Object.keys(initialRegion).length != 0) && this.mapa(initialRegion)}
-                <MapDetails km={parseFloat(this.state.distanceTravelled).toFixed(2)} points={parseInt(points)}/>
+                {(Object.keys(initialRegion).length == 0) ? v : this.mapa(initialRegion)}
+                <MapDetails mapReady={this.state.mapReady}  km={parseFloat(this.state.distanceTravelled).toFixed(2)} points={parseInt(points)}/>
             </View>
         )
     }

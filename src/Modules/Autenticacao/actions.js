@@ -68,3 +68,16 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
             });
     }
 };
+
+export const sessionUserActive = (nome:string,email:string) => {
+    return dispatch => {
+        dispatch({
+            type: LOGIN_SUCESSO,
+            payload: {
+                email,
+                nome,
+                logged: true,
+            }
+        });
+    };
+};
