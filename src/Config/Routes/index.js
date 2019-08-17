@@ -17,7 +17,7 @@ const AppNavigator = createStackNavigator(
     },
     {
         index: 0,
-        initialRouteName: "Feed",
+        initialRouteName: "Loading",
         headerMode: "none"
     }
 );

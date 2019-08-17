@@ -122,6 +122,12 @@ class Map extends Component{
 
     pararCorrida(){
         if(this.watchID){
+            this.setState({
+                cords: [],
+                distanceTravelled: 0,
+                prevLatLng: {},
+                points: 0
+            });
             navigator.geolocation.clearWatch(this.watchID);
         }
     }

@@ -1,21 +1,27 @@
-import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR } from "./constants";
+import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR, UPDATE_USER } from "./constants";
 import { app } from '../App/index';
 import messages from '../../Config/Firebase/messages';
 import firebase, {User} from 'firebase';
+import FirebaseService  from './../../Services/firebase';
 
 export const login = (email:string,senha:string) => {
     return dispatch => {
         dispatch(app.actions.loading(true));
         firebase.auth().signInWithEmailAndPassword(email,senha)
             .then((user:User) => {
-               dispatch({
-                   type: LOGIN_SUCESSO,
-                   payload: {
-                       email,
-                       logged: true,
-                       nome: user.displayName,
-                   }
-               });
+                var service  = new FirebaseService();
+                var payload = {email,nome: user.displayName,logged: true,uid: user.uid,totalDistance:0,totalPoints: 0,totalTime: 0};
+                service.checkExistsAndCreateUser(uid)
+                    .then((response) => {
+                        if(response.type == 2){
+                            payload = Object.assign({},payload,response.data);
+                        }
+                        dispatch({
+                            type: LOGIN_SUCESSO,
+                            payload
+                        });
+                    });
+
             }).catch(error => {
                 let msg  =  messages[error.code];
                 msg = (typeof msg == "undefined") ? 'Falha ao realizar operação' : msg;
@@ -38,15 +44,31 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
                 user.updateProfile({
                     displayName: nome
                 }).then(() => {
-                    dispatch({
-                        type: CADASTRO_SUCESSO,
-                        payload:{
-                            email: email,
-                            nome: nome,
-                            senha: senha,
-                            logged: true
-                        }
-                    });
+                    var service = new FirebaseService();
+                    service.setUserData(user.uid)
+                        .then(() => {
+                            dispatch({
+                                type: CADASTRO_SUCESSO,
+                                payload:{
+                                    email,
+                                    nome,
+                                    senha,
+                                    logged: true,
+                                    totalDistance:0,
+                                    totalPoints: 0,
+                                    totalTime:0
+                                }
+                            });
+                        }).catch(() => {
+                            user.delete();
+                            dispatch({
+                                type: ERROR,
+                                payload:{
+                                    error: 'Falha ao criar usuário.'
+                                }
+                            });
+                        });
+
                 }).catch(error => {
                     user.delete();
                     dispatch({
@@ -69,15 +91,34 @@ export const efetuarCadastro = (nome:string,email:string,senha:string) => {
     }
 };
 
-export const sessionUserActive = (nome:string,email:string) => {
+export const sessionUserActive = (nome:string,email:string,uid:string) => {
     return dispatch => {
-        dispatch({
-            type: LOGIN_SUCESSO,
-            payload: {
-                email,
-                nome,
-                logged: true,
-            }
+        var service  = new FirebaseService();
+        var payload = {email,nome,logged: true,uid,totalDistance:0,totalPoints: 0,totalTime: 0};
+        service.checkExistsAndCreateUser(uid)
+            .then((response) => {
+                if(response.type == 2){
+                    payload = Object.assign({},payload,response.data);
+                }
+                dispatch({
+                    type: LOGIN_SUCESSO,
+                    payload
+                });
         });
+
+
     };
+};
+
+export const updateUser = (totalDistance,totalPoints,totalTime) => {
+  return dispatch => {
+      dispatch({
+          type: UPDATE_USER,
+          payload: {
+              totalTime,
+              totalDistance,
+              totalPoints
+          }
+      })
+  };
 };

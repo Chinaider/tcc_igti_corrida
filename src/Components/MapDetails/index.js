@@ -32,6 +32,9 @@ class MapDetails extends Component{
     }
 
     telaIniciarCorrida(){
+        const { totalTime, totalDistance, totalPoints } = this.props;
+        const distance = (totalDistance == 0) ? '0.00' : totalDistance;
+        const time = (totalTime == 0) ? '00:00:00' : totalTime;
         return (
             <View>
                 <View style={styles.cardHeader}>
@@ -42,20 +45,20 @@ class MapDetails extends Component{
                     </View>
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={{fontSize: 44, color: '#EC242E'}}>12.035</Text>
+                    <Text style={{fontSize: 44, color: '#EC242E'}}>{totalPoints}</Text>
                 </View>
                 <View style={styles.cardContent}>
                     <View style={{flex: 1,alignItems: 'flex-start'}}>
                         <Text style={styles.cardLabel}>DISTÂNCIA TOTAL</Text>
                         <Text style={[styles.cardText,{alignItems:'center'}]}>
-                            27.81
+                            {distance}
                             <Text style={styles.cardTextSmall}>KM</Text>
                         </Text>
                     </View>
                     <View style={{flex: 1,alignItems: 'flex-end'}}>
                         <Text style={styles.cardLabel}>TEMPO TOTAL</Text>
                         <Text style={styles.cardText}>
-                            21:55:11
+                            {time}
                         </Text>
                     </View>
                 </View>
@@ -89,7 +92,7 @@ class MapDetails extends Component{
                     </View>
                 </View>
                 <View style={styles.cardContent}>
-                    <Button large rounded iconRight style={styles.buttonRed} onPress={() => this.props.pararCorrida()}>
+                    <Button large rounded iconRight style={styles.buttonRed} onPress={() => this.parar(time,this.props.km,this.props.points,moment().format(),this.props.uid)}>
                         <Text style={ styles.buttonRedText }>PARAR</Text>
                     </Button>
                 </View>
@@ -108,6 +111,14 @@ class MapDetails extends Component{
         }
     }
 
+
+    parar(time,distance,points,date,uid){
+        const timeString = (!time)  ? '00:00:00' : time.format('HH:mm:ss');
+        this.stopTimer();
+        const {totalTime, totalPoints, totalDistance} = this.props;
+        this.props.pararCorrida(timeString,distance,points,date,uid,totalTime,totalPoints,totalDistance);
+    }
+
     stopTimer(){
         if(this.state.timer){
             clearInterval(this.state.timer);
@@ -123,15 +134,20 @@ class MapDetails extends Component{
 function mapDispatchToProps(dispatch) {
     return {
         iniciarCorrida:() => dispatch(actions.map.startWalk()),
-        pararCorrida: () => dispatch(actions.map.stopWalk())
+        pararCorrida: (time,distance,points,date,uid,totalTime,totalPoints,totalDistance) => dispatch(actions.map.stopWalk(time,distance,points,date,uid,totalTime,totalPoints,totalDistance))
     };
 }
 
 function mapStateToProps(state : States) {
     const {startWalk, region} = state.map;
+    const { uid, totalDistance, totalPoints, totalTime } = state.autenticacao;
     return {
         startWalk,
-        region
+        region,
+        uid,
+        totalDistance,
+        totalPoints,
+        totalTime
     };
 }
 

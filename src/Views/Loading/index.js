@@ -10,7 +10,7 @@ class Loading extends Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged((user:User) => {
             if(user){
-                this.props.sessionUserActive(user.email,user.displayName);
+                this.props.sessionUserActive(user.displayName,user.email,user.uid);
                 this.props.navigation.navigate('Feed');
                 return;
             }
@@ -30,7 +30,7 @@ class Loading extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        sessionUserActive: (nome,email) => dispatch(actions.autenticacao.sessionUserActive(nome,email))
+        sessionUserActive: (nome,email,uid) => dispatch(actions.autenticacao.sessionUserActive(nome,email,uid))
     };
 }
 
