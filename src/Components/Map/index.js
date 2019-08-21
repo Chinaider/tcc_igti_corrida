@@ -33,7 +33,7 @@ class Map extends Component{
        this.pararCorrida();
     }
 
-    direcao(){
+    polyline(){
         const {  startWalk } = this.props;
         if(!startWalk || this.state.cords.length == 0){
             return;
@@ -52,15 +52,11 @@ class Map extends Component{
             initialRegion={initialRegion}
             followsUserLocation={true}
             showsUserLocation={true}
+            showsMyLocationButton={true}
             loadingEnabled={true}
             loadingIndicatorColor="#f8664f"
             loadingBackgroundColor="#FFFFFF"
-            rotateEnabled={false}
-            scrollEnabled={false}
-            pitchEnabled={false}
-            showsMyLocationButton={true}
-            zoomEnabled={true}
-            zoomTapEnabled={true}
+            cacheEnabled={false}
             zoomControlEnabled={false}
             showsTraffic={false}
             onMapReady={() => {
@@ -68,7 +64,7 @@ class Map extends Component{
                 this.setState({mapReady:true});
             }}
         >
-            {this.direcao()}
+            {this.polyline()}
         </MapView>);
     }
 
@@ -157,7 +153,7 @@ class Map extends Component{
             },
             (error) => {console.log(error)},
             {
-                timeout: 50000,
+                timeout: 1000,
                 enableHighAccuracy: true,
                 maximumAge: 1000
             });
