@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import { View, PixelRatio, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
+import { Icon } from 'native-base';
 import { actions, States } from '../../Modules';
 import MapView, {  Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import MapDetails from '../MapDetails';
 import haversine from "haversine";
+import Menu from '../Menu';
 
 const latitudeDelta = 0.0083;
 const longitudeDelta = 0.0084;
@@ -51,8 +53,8 @@ class Map extends Component{
             followsUserLocation={true}
             showsUserLocation={true}
             loadingEnabled={true}
-            loadingIndicatorColor="#FFFFFF"
-            loadingBackgroundColor="#000000"
+            loadingIndicatorColor="#f8664f"
+            loadingBackgroundColor="#FFFFFF"
             rotateEnabled={false}
             scrollEnabled={false}
             pitchEnabled={false}
@@ -75,10 +77,21 @@ class Map extends Component{
         const {  initialRegion, points } = this.state;
         const v = <View style={{position:'relative',flex:1,width:'100%',height: Math.round(Dimensions.get('window').height/2)}}/>;
         return (
-            <View style={{flex:1}}>
-                {(Object.keys(initialRegion).length == 0) ? v : this.mapa(initialRegion)}
-                <MapDetails mapReady={this.state.mapReady}  km={parseFloat(this.state.distanceTravelled).toFixed(2)} points={parseInt(points)}/>
-            </View>
+            <Menu onRef={el => this.menu = el}>
+                <View style={{flex:1}}>
+                    {(Object.keys(initialRegion).length == 0) ? v : this.mapa(initialRegion)}
+                    <MapDetails mapReady={this.state.mapReady}  km={parseFloat(this.state.distanceTravelled).toFixed(2)} points={parseInt(points)}/>
+                    <Icon
+                        raised
+                        name='md-menu'
+                        type='Ionicons'
+                        color='#f50'
+                        onPress={() => this.menu.openDrawer()}
+                        style={{position:'absolute',top:20,left:15,elevation:3,fontWeight: 'bold'}}
+                    />
+
+                </View>
+            </Menu>
         )
     }
 

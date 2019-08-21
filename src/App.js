@@ -37,6 +37,7 @@ export default class App extends Component<Props> {
       this.state = {
         store: configureStore(() => {})
       };
+      console.disableYellowBox = true;
       this.state.store.dispatch(actions.app.checkAccessLocation());
   }
 

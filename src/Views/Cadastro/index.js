@@ -20,7 +20,7 @@ import {
 } from 'native-base';
 
 
-const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
+const videoBg = require('./../../../assets/Sunset-Desert-Run.mp4');
 
 
 const required = value => value ? undefined : 'Campo Obrigatorio.';

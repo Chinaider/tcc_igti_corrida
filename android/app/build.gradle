@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "Transparent.js"
+    entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -102,7 +102,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.corrida"
+        applicationId "com.takewalk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -138,8 +138,9 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-maps')
     implementation project(':react-native-video')
+    implementation project(':react-native-maps')
+    implementation project(':react-native-linear-gradient')
     implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

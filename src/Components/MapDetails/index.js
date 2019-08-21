@@ -45,7 +45,7 @@ class MapDetails extends Component{
                     </View>
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={{fontSize: 44, color: '#EC242E'}}>{totalPoints}</Text>
+                    <Text style={{fontSize: 44, color: '#f8664f'}}>{totalPoints}</Text>
                 </View>
                 <View style={styles.cardContent}>
                     <View style={{flex: 1,alignItems: 'flex-start'}}>
@@ -85,7 +85,7 @@ class MapDetails extends Component{
                     </View>
 
                     <View style={{flex:3,alignItems: 'flex-end'} }>
-                        <Text style={ [styles.text, { fontSize: 34, color: '#f02733' }] }>{this.props.points} <Icon style={{fontSize: 18,color:'#f02733' }} type={"FontAwesome5"} name="gem"/></Text>
+                        <Text style={ [styles.text, { fontSize: 34, color: '#f8664f' }] }>{this.props.points} <Icon style={{fontSize: 18,color:'#f8664f' }} type={"FontAwesome5"} name="gem"/></Text>
                         <Text style={ [styles.text, { fontSize: 22,color: '#adadad'}] }>
                             <Icon style={[styles.text, { fontSize: 22,color: '#adadad' }]} name="timer"/> {show}
                         </Text>

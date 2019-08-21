@@ -19,7 +19,7 @@ import {Alert, StyleSheet} from "react-native";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {Field, formValueSelector, reduxForm} from "redux-form";
 
-const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
+const videoBg = require('./../../../assets/Sunset-Desert-Run.mp4');
 
 const required = value => value ? undefined : 'Campo Obrigatorio.';
 const minValue = min => value =>
