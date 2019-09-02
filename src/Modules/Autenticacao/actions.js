@@ -1,4 +1,4 @@
-import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR, UPDATE_USER } from "./constants";
+import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR, UPDATE_USER, USER_LOGOUT } from "./constants";
 import { app } from '../App/index';
 import messages from '../../Config/Firebase/messages';
 import firebase, {User} from 'firebase';
@@ -121,4 +121,18 @@ export const updateUser = (totalDistance,totalPoints,totalTime) => {
           }
       })
   };
+};
+
+export const logOutUser = () => {
+  return dispatch => {
+      dispatch(app.actions.loading(true));
+      firebase.auth().signOut().finally(function () {
+          dispatch(app.actions.loading(false));
+          dispatch({
+              type: USER_LOGOUT,
+              payload:{}
+          });
+      });
+
+  }
 };

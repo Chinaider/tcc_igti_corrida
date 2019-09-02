@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, PixelRatio, Dimensions } from 'react-native';
+import { View, PixelRatio, Dimensions, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'native-base';
 import { actions, States } from '../../Modules';
@@ -56,7 +56,7 @@ class Map extends Component{
             loadingEnabled={true}
             loadingIndicatorColor="#f8664f"
             loadingBackgroundColor="#FFFFFF"
-            cacheEnabled={false}
+            cacheEnabled={true}
             zoomControlEnabled={false}
             showsTraffic={false}
             onMapReady={() => {
@@ -71,7 +71,9 @@ class Map extends Component{
     render(){
         this.comecarCorrida();
         const {  initialRegion, points } = this.state;
-        const v = <View style={{position:'relative',flex:1,width:'100%',height: Math.round(Dimensions.get('window').height/2)}}/>;
+        const v = (<View style={{position:'relative',alignItems:'center',flex:1,width:'100%',height: Math.round(Dimensions.get('window').height/2)}}>
+            <Text>Seu Mapa está carregando</Text>
+        </View>);
         return (
             <Menu onRef={el => this.menu = el}>
                 <View style={{flex:1}}>

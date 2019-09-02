@@ -1,8 +1,31 @@
 import React, {Component} from 'react';
-import {Icon,View, Text, Drawer, List, ListItem, Left, Right,Content  } from "native-base";
+import { Alert } from 'react-native';
+import { Icon,View, Text, Drawer, List, ListItem, Left, Right,Content } from "native-base";
+import { connect } from 'react-redux';
+import { actions, States } from '../../Modules';
 import styles from './style';
 
 class SideBar extends Component {
+
+
+    logout(){
+        Alert.alert(
+            'Sair da aplicação',
+            'Tem certeza que deseja sair?',
+            [
+                {
+                    text: 'Não',
+                    style: 'cencel',
+                    onPress: () => {}
+                },
+                {
+                    text:'Sim',
+                    onPress: () => this.props.userLogout()
+                }
+            ]
+        );
+    }
+
     render(){
         return (
             <View style={[ styles.container, { backgroundColor: '#fff' } ]}>
@@ -24,9 +47,9 @@ class SideBar extends Component {
                                 <Icon name="arrow-forward" />
                             </Right>
                         </ListItem>
-                        <ListItem>
+                        <ListItem button onPress={() => { this.logout() }}>
                             <Left>
-                                <Text>Sair</Text>
+                                <Text style={{color: 'red'}}>Sair</Text>
                             </Left>
                             <Right>
                                 <Icon type="Ionicons" name="log-out" />
@@ -41,6 +64,16 @@ class SideBar extends Component {
         );
     }
 };
+
+function mapDispatchToProps(dispatch) {
+    return {
+        userLogout: () => dispatch(actions.autenticacao.logOutUser())
+    };
+};
+
+function mapStateToProps(state : States) {return {};};
+
+SideBar = connect(mapStateToProps,mapDispatchToProps)(SideBar);
 
 export default class Menu extends Component{
 
@@ -69,3 +102,4 @@ export default class Menu extends Component{
         );
     }
 }
+

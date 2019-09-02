@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR, UPDATE_USER } from './constants';
+import { LOGIN_SUCESSO, CADASTRO_SUCESSO, ERROR, UPDATE_USER,USER_LOGOUT } from './constants';
 
 export type AutenticacaoState = {
     email: string,
@@ -50,6 +50,9 @@ export default  handleActions({
            totalDistance:action.payload.totalDistance,
            totalPoints: action.payload.totalPoints,
            totalTime:action.payload.totalTime};
+   },
+   [USER_LOGOUT]:(state:AutenticacaoState,action):AutenticacaoState => {
+       return initialState;
    },
    [ERROR]: (state:AutenticacaoState,action):AutenticacaoState => {
        return {...state,senha:'',error: action.payload.error}
