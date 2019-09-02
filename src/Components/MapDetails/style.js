@@ -28,7 +28,7 @@ export default StyleSheet.create({
         color: '#adadad'
     },
     buttonRed: {
-        backgroundColor: '#ec242e',
+        backgroundColor: '#f8664f',
         borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',

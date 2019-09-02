@@ -19,7 +19,7 @@ import {Alert, StyleSheet} from "react-native";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {Field, formValueSelector, reduxForm} from "redux-form";
 
-const videoBg = require('Corrida/assets/Sunset-Desert-Run.mp4');
+const videoBg = require('./../../../assets/Sunset-Desert-Run.mp4');
 
 const required = value => value ? undefined : 'Campo Obrigatorio.';
 const minValue = min => value =>
@@ -30,7 +30,11 @@ const email = value =>
 
 class AutenticacaoView extends Component {
 
-   efetuarLogin(){
+    constructor(props){
+        super(props);
+    }
+
+    efetuarLogin(){
        if(!this.props.valid){
            Alert.alert(
                'Erro',
@@ -87,6 +91,9 @@ class AutenticacaoView extends Component {
     }
 
     render() {
+        if(this.props.logged){
+            this.props.navigation.navigate('Feed');
+        }
         return (
             <Container>
                 <View style={style.container}>
@@ -148,10 +155,12 @@ function mapStateToProps(state : States) {
     const email =  selector(state,'email');
     const senha = selector(state,'senha');
     const error = state.autenticacao.error;
+    const logged = state.autenticacao.logged;
     return {
         email,
         senha,
-        error
+        error,
+        logged
     }
 }
 

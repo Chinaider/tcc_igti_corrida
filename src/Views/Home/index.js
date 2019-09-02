@@ -4,7 +4,7 @@ import {StyleSheet} from "react-native";
 import Video from 'react-native-video';
 import style from './style';
 
-const videoBg = require('Corrida/assets/varias_pessoas.mp4');
+const videoBg = require('./../../../assets/Sunset-Desert-Run.mp4');
 
 
 export default class Home extends Component {
